@@ -1,6 +1,7 @@
 #import "RCTVideoManager.h"
 #import "RCTVideo.h"
 #import <React/RCTBridge.h>
+#import <React/RCTUIManager.h>
 #import <AVFoundation/AVFoundation.h>
 
 @implementation RCTVideoManager
@@ -18,6 +19,19 @@ RCT_EXPORT_MODULE();
 {
     return dispatch_get_main_queue();
 }
+
+- (RCTVideo *) getViewWithTag:(NSNumber *)tag {
+    UIView *view = [self.bridge.uiManager viewForReactTag:tag];
+    return [view isKindOfClass:[RCTVideo class]] ? (RCTVideo *)view : nil;
+}
+
+
+RCT_EXPORT_METHOD(getCurrentTime:
+                  (nonnull NSNumber *)reactTag callback:(RCTResponseSenderBlock)callback) {
+    RCTVideo *video = [self getViewWithTag:reactTag];
+    callback(@[@(video.getCurrentTime)]);
+}
+
 
 RCT_EXPORT_VIEW_PROPERTY(src, NSDictionary);
 RCT_EXPORT_VIEW_PROPERTY(resizeMode, NSString);
